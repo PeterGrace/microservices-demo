@@ -1,14 +1,27 @@
+{{- if .Values.ingress.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: socks-ingress
+  {{- if (and (.Values.ingress.tls) (.Values.ingress.tls.acme)) }}
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  {{- end }}
+  name: socks-ingress
 spec:
   rules:
   - http:
       paths:
-      - path: /
-        backend:
+      - backend:
           serviceName: front-end
           servicePort: 80
+        path: /
+	{{- if .Values.ingress.fqdn }}
+    host: {{ .Values.ingress.fqdn }}
+	{{- end }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.fqdn }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+{{- end }}
