@@ -15,9 +15,9 @@ spec:
           serviceName: front-end
           servicePort: 80
         path: /
-	{{- if .Values.ingress.fqdn }}
+    {{- if .Values.ingress.fqdn }}
     host: {{ .Values.ingress.fqdn }}
-	{{- end }}
+    {{- end }}
   {{- if .Values.ingress.tls.enabled }}
   tls:
   - hosts:
